@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: A main template for implementing EC2 schedule
+Parameters:
+  S3Backet:
+    Type: String
+    Default: aws-schedule
+Resources:
+  Lambda:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      Tags:
+        -
+          Key: Stack
+          Value: Lambda
+      TemplateURL: !Sub https://s3.amazonaws.com/${S3Backet}/lambda.yml
+      TimeoutInMinutes: 15
+
+  CloudWatch:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: Lambda
+    Properties:
+      Tags:
+        -
+          Key: Stack
+          Value: CloudWatch
+      TemplateURL: !Sub https://s3.amazonaws.com/${S3Backet}/cloudwatch.yml
+      TimeoutInMinutes: 15
+      Parameters:
+        Lambda:
+          Fn::GetAtt:
+            - Lambda
+            - Outputs.LambdaSchedule

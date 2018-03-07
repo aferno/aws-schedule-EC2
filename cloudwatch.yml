@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: A template for cloudwatch schedule
+Parameters:
+  Cron:
+    Type: String
+    Default: cron(12 12 ? * SUN-SAT *)
+  Lambda:
+    Type: String
+Resources:
+  ScheduledRule: #Schedule
+    Type: "AWS::Events::Rule"
+    Properties:
+      Description: "ScheduledRule"
+      ScheduleExpression:
+        Ref: Cron
+      State: "ENABLED"
+      Targets:
+        - Arn:
+            Ref: Lambda
+          Id: "TargetFunctionV1"
+  PermissionForEventsToInvokeLambda: #Permission
+    Type: "AWS::Lambda::Permission"
+    Properties:
+      FunctionName:
+        Ref: Lambda
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn:
+        Fn::GetAtt:
+          - "ScheduledRule"
+          - "Arn"
