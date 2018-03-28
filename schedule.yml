@@ -4,6 +4,8 @@ Parameters:
   S3Backet:
     Type: String
     Default: aws-schedule
+  Cron:
+    Type: String
 Resources:
   Lambda:
     Type: AWS::CloudFormation::Stack
@@ -26,6 +28,8 @@ Resources:
       TemplateURL: !Sub https://s3.amazonaws.com/${S3Backet}/cloudwatch.yml
       TimeoutInMinutes: 15
       Parameters:
+        Cron:
+          Ref: Cron
         Lambda:
           Fn::GetAtt:
             - Lambda

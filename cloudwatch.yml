@@ -3,7 +3,6 @@ Description: A template for cloudwatch schedule
 Parameters:
   Cron:
     Type: String
-    Default: cron(12 12 ? * SUN-SAT *)
   Lambda:
     Type: String
 Resources:
